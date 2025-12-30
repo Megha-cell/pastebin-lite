@@ -9,8 +9,11 @@ import pasteRoutes from "./routes/pasteRoutes.js"
 import { viewPaste } from "./controllers/viewPaste.js";
 const app = express();
 app.use(cors({
-  origin: "*"
+  origin: "*",
+  methods: ["GET", "POST"],
 }));
+
+
 app.use(express.json());
 
 app.use("/api", healthRoutes);
