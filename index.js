@@ -8,9 +8,11 @@ import healthRoutes from "./routes/health.js";
 import pasteRoutes from "./routes/pasteRoutes.js"
 import { viewPaste } from "./controllers/viewPaste.js";
 const app = express();
+const allowedOrigin = process.env.FRONTEND_URL || "*";
 app.use(cors({
-  origin: "*",
+  origin: allowedOrigin,
   methods: ["GET", "POST"],
+  
 }));
 
 
