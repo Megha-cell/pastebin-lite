@@ -1,6 +1,5 @@
 import redis from "../redis.js";
 
-
 const escapeHtml = (str) =>
   str
     .replace(/&/g, "&amp;")
@@ -16,7 +15,7 @@ export const viewPaste = async (req, res) => {
   const data = await redis.hGetAll(key);
 
   if (!data || !data.content) {
-    return res.status(404).send("Paste not found");
+    return res.status(404).json({ error: "Paste not found" }); // return JSON
   }
 
   // Determine time
@@ -28,23 +27,10 @@ export const viewPaste = async (req, res) => {
   // TTL check
   if (data.expires_at && now >= Number(data.expires_at)) {
     await redis.del(key);
-    return res.status(404).send("Paste expired");
+    return res.status(404).json({ error: "Paste expired" }); // return JSON
   }
 
-  // View limit check
-  if (data.remaining_views) {
-    const views = Number(data.remaining_views);
-    if (views <= 0) {
-      await redis.del(key);
-      return res.status(404).send("Paste unavailable");
-    }
-
-    await redis.hSet(key, "remaining_views", (views - 1).toString());
-
-    if (views - 1 === 0) {
-      await redis.del(key);
-    }
-  }
+  
 
   const safeContent = escapeHtml(data.content);
 

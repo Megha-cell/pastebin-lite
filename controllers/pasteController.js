@@ -46,6 +46,6 @@ export const createPaste = async (req, res) => {
 
   res.status(201).json({
     id,
-    url: `${process.env.PUBLIC_BASE_URL}/p/${id}`,
+    url: `https://pastebin-lite-blond-seven.vercel.app/p/${id}`,
   });
 };

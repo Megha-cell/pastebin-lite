@@ -31,16 +31,14 @@ export const getPaste = async (req, res) => {
   // View limit check
   let remainingViews = null;
   if (data.remaining_views) {
-    remainingViews = Number(data.remaining_views);
+    // Use atomic Redis DECR
+    remainingViews = await redis.hIncrBy(key, "remaining_views", -1);
 
-    if (remainingViews <= 0) {
+    if (remainingViews < 0) {
+      // Revert negative views and delete paste
       await redis.del(key);
       return res.status(404).json({ error: "View limit exceeded" });
     }
-
-    // Decrement view count atomically
-    remainingViews -= 1;
-    await redis.hSet(key, "remaining_views", remainingViews.toString());
 
     if (remainingViews === 0) {
       await redis.del(key);
