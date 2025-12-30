@@ -15,6 +15,10 @@ app.use(express.json());
 app.use("/api", healthRoutes);
 app.use("/api/pastes", pasteRoutes);
 app.get("/p/:id", viewPaste);
+app.get("/", (req, res) => {
+  res.send("Pastebin Lite API is running");
+});
+
 // export default app;
 
 const PORT = process.env.PORT || 5000;
